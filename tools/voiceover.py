@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate voiceover audio using ElevenLabs or Qwen3-TTS.
+Generate voiceover audio using ElevenLabs, Qwen3-TTS, 60db or Chatterbox (local).
 
 Usage:
     # From script file (ElevenLabs, default)
@@ -28,6 +28,10 @@ Usage:
     uv run tools/voiceover.py --provider qwen3 --speaker Ryan --scene-dir public/audio/scenes --json
     uv run tools/voiceover.py --provider qwen3 --tone warm --scene-dir public/audio/scenes --json
     uv run tools/voiceover.py --provider qwen3 --instruct "Speak warmly" --script script.txt --output out.mp3
+
+    # Using Chatterbox Multilingual (free, runs locally, 23 languages incl. Turkish)
+    uv run tools/voiceover.py --provider chatterbox --language tr --scene-dir public/audio/scenes --json
+    uv run tools/voiceover.py --provider chatterbox --ref-audio voice_tr.wav --scene-dir public/audio/scenes --json
 """
 from __future__ import annotations
 
@@ -184,7 +188,7 @@ Examples:
         "--provider",
         type=str,
         default="elevenlabs",
-        choices=["elevenlabs", "qwen3", "60db"],
+        choices=["elevenlabs", "qwen3", "60db", "chatterbox"],
         help="TTS provider (default: elevenlabs)",
     )
 
@@ -260,7 +264,8 @@ Examples:
         "--language",
         type=str,
         default="Auto",
-        help="Qwen3-TTS language hint (default: Auto)",
+        help="Language: Qwen3-TTS hint (default: Auto); Chatterbox language code or name "
+             "(Auto = the brand's chatterbox.language, else tr)",
     )
     parser.add_argument(
         "--instruct",
@@ -276,22 +281,49 @@ Examples:
     parser.add_argument(
         "--ref-audio",
         type=str,
-        help="Qwen3-TTS reference audio file for voice cloning",
+        help="Reference audio for voice cloning (Qwen3-TTS, or Chatterbox: 10-20s clip in the target language)",
     )
     parser.add_argument(
         "--ref-text",
         type=str,
-        help="Qwen3-TTS transcript of reference audio (required with --ref-audio)",
+        help="Qwen3-TTS transcript of reference audio (required with --ref-audio for qwen3)",
     )
     parser.add_argument(
         "--temperature",
         type=float,
-        help="Qwen3-TTS expressiveness (default: model default ~0.7, range: 0.3-1.5)",
+        help="Qwen3-TTS expressiveness (default ~0.7, range 0.3-1.5) / Chatterbox sampling temperature (default 0.8)",
     )
     parser.add_argument(
         "--top-p",
         type=float,
         help="Qwen3-TTS nucleus sampling (default: model default ~0.8, range: 0.1-1.0)",
+    )
+
+    # Chatterbox-specific options (local)
+    parser.add_argument(
+        "--exaggeration",
+        type=float,
+        default=None,
+        help="Chatterbox emotion intensity 0.25-2 (default 0.5; 0.6-0.8 for a livelier ad read)",
+    )
+    parser.add_argument(
+        "--cfg-weight",
+        type=float,
+        default=None,
+        help="Chatterbox pace/adherence 0-1 (default 0.5; ~0.3 is slower and more deliberate)",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=0,
+        help="Chatterbox random seed for repeatable takes (default 0; -1 = random)",
+    )
+    parser.add_argument(
+        "--device",
+        type=str,
+        default="auto",
+        choices=["auto", "cpu", "cuda", "mps"],
+        help="Chatterbox device (default: auto)",
     )
 
     # Cloud GPU provider (for Qwen3-TTS)
@@ -342,7 +374,7 @@ Examples:
 def read_script(script_path: str | None) -> str:
     """Read script from file or stdin."""
     if script_path:
-        with open(script_path) as f:
+        with open(script_path, encoding="utf-8") as f:
             return f.read().strip()
     else:
         if sys.stdin.isatty():
@@ -678,6 +710,33 @@ def generate_single_audio_qwen3(
     )
 
 
+def generate_audio_chatterbox(
+    scripts: list[str],
+    output_paths: list[Path],
+    opts: dict,
+    max_wpm: float | None = None,
+    verbose: bool = False,
+) -> list[dict]:
+    """Generate one or more files with local Chatterbox in a single model load.
+
+    `opts` carries language/ref_audio/exaggeration/cfg_weight/temperature/seed/device.
+    Returns a list of result dicts matching the input order.
+    """
+    from chatterbox_tts import generate_audio
+
+    result = generate_audio(
+        text=list(scripts),
+        output_path=[str(p) for p in output_paths],
+        max_wpm=max_wpm,
+        verbose=verbose,
+        **opts,
+    )
+    if "outputs" not in result:
+        err = result.get("error", "Chatterbox generation failed")
+        return [{"success": False, "error": err, "output": str(p)} for p in output_paths]
+    return result["outputs"]
+
+
 def generate_batch_audio_qwen3(
     scripts: list[str],
     output_paths: list[Path],
@@ -758,6 +817,8 @@ def process_scene_directory(
     top_p: float | None = None,
     cloud: str = "runpod",
     max_wpm: float | None = None,
+    # Chatterbox params
+    chatterbox_opts: dict | None = None,
 ) -> list[dict]:
     """Process all .txt files in directory, generate .mp3 for each."""
     txt_files = sorted(scene_dir.glob("*.txt"))
@@ -770,7 +831,7 @@ def process_scene_directory(
     scenes = []
     for txt_file in txt_files:
         mp3_file = txt_file.with_suffix(".mp3")
-        script = txt_file.read_text().strip()
+        script = txt_file.read_text(encoding="utf-8").strip()
 
         if not script:
             print(f"Warning: Empty script in {txt_file.name}, skipping", file=sys.stderr)
@@ -816,6 +877,27 @@ def process_scene_directory(
             if not json_output:
                 tone_note = f" [instruct: {s['instruct']}]" if s["instruct"] != instruct else ""
                 print(f"  {s['txt_file'].name} → {s['mp3_file'].name} ({len(s['script'])} chars){tone_note}")
+        return results, total_duration, total_chars
+
+    # Chatterbox: always one batch, so the (slow, local) model loads once
+    if provider == "chatterbox":
+        batch_results = generate_audio_chatterbox(
+            scripts=[s["script"] for s in scenes],
+            output_paths=[s["mp3_file"] for s in scenes],
+            opts=chatterbox_opts or {},
+            max_wpm=max_wpm,
+            verbose=not json_output,
+        )
+        for s, r in zip(scenes, batch_results):
+            r["script"] = str(s["txt_file"])
+            results.append(r)
+            if r.get("duration_seconds"):
+                total_duration += r["duration_seconds"]
+            if not json_output:
+                if r.get("success"):
+                    print(f"  {s['mp3_file'].name} ({r.get('duration_seconds', '?')}s{_pace_note(r)})", file=sys.stderr)
+                else:
+                    print(f"  {s['mp3_file'].name}  [FAILED: {r.get('error')}]", file=sys.stderr)
         return results, total_duration, total_chars
 
     # Decide batch vs serial for qwen3:
@@ -1008,7 +1090,7 @@ def main():
         print("Error: --output is required for single-file mode", file=sys.stderr)
         sys.exit(1)
 
-    if args.ref_audio and not args.ref_text:
+    if args.ref_audio and not args.ref_text and provider == "qwen3":
         print("Error: --ref-text is required with --ref-audio", file=sys.stderr)
         sys.exit(1)
 
@@ -1087,6 +1169,21 @@ def main():
             # Apply voice ID from brand if not explicitly provided
             if not args.voice_id and voice_config.get("voiceId") and voice_config["voiceId"] != "YOUR_VOICE_ID_HERE":
                 args.voice_id = voice_config["voiceId"]
+        elif provider == "chatterbox":
+            # Apply language / reference clip / delivery from the brand's `chatterbox` block
+            cb_cfg = voice_config.get("chatterbox", {})
+            if cb_cfg.get("language") and args.language == "Auto":
+                args.language = cb_cfg["language"]
+            if cb_cfg.get("refAudio") and not args.ref_audio:
+                ref_path = get_brand_dir(args.brand) / cb_cfg["refAudio"]
+                if ref_path.exists():
+                    args.ref_audio = str(ref_path)
+                else:
+                    print(f"Warning: Chatterbox ref audio not found: {ref_path}", file=sys.stderr)
+            for key, attr in (("exaggeration", "exaggeration"), ("cfgWeight", "cfg_weight"),
+                              ("temperature", "temperature")):
+                if key in cb_cfg and getattr(args, attr) is None:
+                    setattr(args, attr, cb_cfg[key])
         elif provider == "60db":
             # Apply 60db voice ID + settings from the brand's `sixtydb` block
             sixtydb_cfg = voice_config.get("sixtydb", {})
@@ -1122,6 +1219,24 @@ def main():
     client = None
     voice_id = None
     sixtydb_api_key = None
+    chatterbox_opts = None
+
+    if provider == "chatterbox":
+        from chatterbox_tts import DEFAULTS as _CB_DEFAULTS, resolve_language
+        try:
+            cb_language = resolve_language("tr" if args.language == "Auto" else args.language)
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+        chatterbox_opts = {
+            "language": cb_language,
+            "ref_audio": args.ref_audio,
+            "exaggeration": args.exaggeration if args.exaggeration is not None else _CB_DEFAULTS["exaggeration"],
+            "cfg_weight": args.cfg_weight if args.cfg_weight is not None else _CB_DEFAULTS["cfg_weight"],
+            "temperature": args.temperature if args.temperature is not None else _CB_DEFAULTS["temperature"],
+            "seed": None if args.seed == -1 else args.seed,
+            "device": args.device,
+        }
 
     if provider == "60db":
         sixtydb_api_key = get_sixtydb_api_key()
@@ -1188,7 +1303,7 @@ def main():
 
         if not args.json:
             txt_count = len(list(scene_dir.glob("*.txt")))
-            provider_label = {"qwen3": "Qwen3-TTS", "60db": "60db"}.get(provider, "ElevenLabs")
+            provider_label = {"qwen3": "Qwen3-TTS", "60db": "60db", "chatterbox": "Chatterbox, local"}.get(provider, "ElevenLabs")
             print(f"Processing {txt_count} scene scripts in {scene_dir} ({provider_label})...", file=sys.stderr)
 
         if args.dry_run:
@@ -1217,6 +1332,7 @@ def main():
                 temperature=args.temperature,
                 top_p=args.top_p,
                 cloud=args.cloud,
+                chatterbox_opts=chatterbox_opts,
             )
             result = {
                 "dry_run": True,
@@ -1244,6 +1360,8 @@ def main():
                     "speed": args.speed,
                     "enhance": args.enhance,
                 }
+            elif provider == "chatterbox":
+                result["settings"] = chatterbox_opts
             else:
                 result["speaker"] = args.speaker
                 result["language"] = args.language
@@ -1284,6 +1402,7 @@ def main():
             top_p=args.top_p,
             cloud=args.cloud,
             max_wpm=args.max_wpm,
+            chatterbox_opts=chatterbox_opts,
         )
 
         # Build final result
@@ -1358,6 +1477,8 @@ def main():
                 "speed": args.speed,
                 "enhance": args.enhance,
             }
+        elif provider == "chatterbox":
+            result["settings"] = chatterbox_opts
         else:
             result["speaker"] = args.speaker
             result["language"] = args.language
@@ -1377,6 +1498,9 @@ def main():
             elif provider == "60db":
                 print(f"  Voice ID: {voice_id}")
                 print(f"  Transport: {args.transport}")
+            elif provider == "chatterbox":
+                print(f"  Language: {chatterbox_opts['language']}")
+                print(f"  Reference: {chatterbox_opts['ref_audio'] or 'built-in voice'}")
             else:
                 print(f"  Speaker: {args.speaker}")
                 print(f"  Language: {args.language}")
@@ -1386,10 +1510,19 @@ def main():
 
     # Generate voiceover
     if not args.json:
-        provider_label = {"qwen3": "Qwen3-TTS", "60db": "60db"}.get(provider, "ElevenLabs")
+        provider_label = {"qwen3": "Qwen3-TTS", "60db": "60db", "chatterbox": "Chatterbox, local"}.get(provider, "ElevenLabs")
         print(f"Generating voiceover ({len(script)} chars, {provider_label})...", file=sys.stderr)
 
-    if provider == "qwen3":
+    if provider == "chatterbox":
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        result = generate_audio_chatterbox(
+            scripts=[script],
+            output_paths=[output_path],
+            opts=chatterbox_opts,
+            max_wpm=args.max_wpm,
+            verbose=not args.json,
+        )[0]
+    elif provider == "qwen3":
         result = generate_single_audio_qwen3(
             script=script,
             output_path=output_path,

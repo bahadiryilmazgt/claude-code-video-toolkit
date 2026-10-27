@@ -135,7 +135,7 @@ This is especially critical for background commands where the working directory 
 
 | Type | Tools | When to Use |
 |------|-------|-------------|
-| **Project tools** | voiceover, music, music_gen, sfx, sync_timing, qc | During video creation workflow |
+| **Project tools** | voiceover, chatterbox_tts, music, music_gen, sfx, sfx_pack, mix_audio, sync_timing, qc | During video creation workflow |
 | **Utility tools** | redub, addmusic, notebooklm_brand, locate_watermark, cutdown | Quick transformations on existing videos |
 | **Cloud GPU** | image_edit, upscale, dewatermark, sadtalker, soulx, qwen3_tts, music_gen, flux2 | AI processing via RunPod or Modal (`--cloud runpod\|modal`; soulx is Modal-only) |
 | **Publishing** | youtube_upload | Upload a finished render to YouTube (use `/publish` for the guided workflow) |
@@ -144,8 +144,9 @@ Utility tools work on any video file without requiring a project structure.
 
 ### Voiceover Generation
 
-Three TTS providers share one `voiceover.py` interface (`--provider`):
-**elevenlabs** (default), **qwen3** (self-hosted, free), and **60db** (premium cloud).
+Four TTS providers share one `voiceover.py` interface (`--provider`):
+**elevenlabs** (default), **qwen3** (self-hosted, free), **60db** (premium cloud), and
+**chatterbox** (free, runs locally, 23 languages incl. Turkish).
 Voice settings (`--stability`, `--similarity`, `--speed`) use a **unified 0-1 scale**
 across all providers — for 60db they are auto-converted to its native 0-100 scale.
 
@@ -182,6 +183,73 @@ Config: `SIXTYDB_API_KEY` (required), `SIXTYDB_VOICE_ID` (optional — falls bac
 settings). `redub.py --tts-provider 60db` uses 60db for the new voice while
 transcription stays on ElevenLabs Scribe (60db has no STT); in `--sync` mode the
 60db output is run back through Scribe to recover word timestamps.
+
+#### Chatterbox (free, local — Turkish and 22 other languages)
+
+`tools/chatterbox_tts.py` runs **Chatterbox Multilingual** (Resemble AI, MIT, commercial use OK)
+on your own machine: no key, no account, no cloud GPU. It is the toolkit's free option for
+languages Qwen3-TTS doesn't cover, **Turkish included**. `voiceover.py --provider chatterbox`
+batches every scene into one call, so the model loads once.
+
+```bash
+uv run tools/chatterbox_tts.py --setup                                  # one-time: env + ~3 GB weights
+uv run tools/voiceover.py --provider chatterbox --language tr --scene-dir public/audio/scenes --json
+uv run tools/voiceover.py --provider chatterbox --ref-audio voice_tr.wav --exaggeration 0.6 \
+    --scene-dir public/audio/scenes --json                              # cloned voice, livelier read
+uv run tools/chatterbox_tts.py --text "Merhaba dünya" --output hello.mp3
+```
+
+- **Own environment.** Chatterbox pins torch 2.6 / transformers 5.2, which clash with the main
+  env (whisper), so the model runs in `tools/chatterbox_worker.py`, a PEP 723 script that uv
+  builds into a cached, locked env (`chatterbox_worker.py.lock`). Plain `uv sync` doesn't need it.
+- **Speed:** CPU ~10x slower than real time (a 5s line ~1 min) plus ~1.5 min model load per
+  call; CUDA is about real time. Budget ~10 min of CPU for a 45-60s ad.
+- **Voice:** without `--ref-audio` it uses the model's built-in voice. For a native accent, give a
+  10-20s clean clip **in the target language** (no transcript needed); the clone inherits the
+  clip's accent and pace. Brands can set it: `voice.json` → `"chatterbox": {"language": "tr",
+  "refAudio": "assets/voice-tr.wav", "exaggeration": 0.55, "cfgWeight": 0.5}`.
+- **Delivery:** `--exaggeration` 0.5 default, 0.6-0.8 for an energetic ad read; lower
+  `--cfg-weight` (~0.3) slows and steadies it. `--seed` (default 0) makes takes repeatable; change
+  it for a different take of a line you don't like.
+- **Script:** write numbers/units as words (`yüzde kırk`, not `%40`). `[pause 0.6s]` gives an exact
+  pause; the worker trims Chatterbox's own leading/trailing silence so pauses aren't padded.
+  Output is normalised to -16 LUFS (the scene-VO target) and carries Resemble's inaudible watermark.
+- **Pacing labels are English-calibrated.** Turkish words are long, so natural Turkish narration
+  measures ~110-140 wpm and may be labelled `slow`; judge by ear, not the label.
+- Captions: `captions.py --engine whisper --language tr --whisper-model turbo` (`base`, the CPU
+  default, is weak for Turkish).
+
+### Free Local Audio: SFX Pack + Music Mixing
+
+No paid audio API is needed for a finished soundtrack:
+
+```bash
+uv run tools/sfx_pack.py --list            # 9 sounds, suggested gains (pack lives in assets/sfx/)
+uv run tools/sfx_pack.py                   # regenerate (deterministic ffmpeg synthesis)
+
+# Rendered video (narration in its audio) + your royalty-free track + SFX -> finished MP4
+uv run tools/mix_audio.py --video out/video.mp4 --music public/audio/music/track.mp3 \
+    --sfx whoosh-soft@0.4 --sfx riser@9.0 --sfx impact-strong@12.0 --output out/video-final.mp4
+uv run tools/mix_audio.py --plan mix.json --output out/video-final.mp4   # same, from a plan file
+uv run tools/mix_audio.py --help-plan                                     # plan format
+```
+
+- **SFX pack** (`assets/sfx/*.wav`, 48 kHz stereo, peak -3 dBFS): `whoosh-soft`, `whoosh-fast`,
+  `pop-subtle`, `click`, `tick`, `impact-soft`, `impact-strong`, `riser`, `transition-sweep`. Each
+  name carries a suggested gain that `mix_audio.py` applies unless a cue sets `:DB`. A riser
+  should *end* on the hit: `riser@T-3.0` with `impact-strong@T`. For Remotion `<Audio>` use, copy
+  them into the project: `sfx_pack.py --output-dir projects/X/public/audio/sfx`.
+- **Music** is whatever royalty-free file the user supplies (put it in the project's
+  `public/audio/music/`). `mix_audio.py` loops it with crossfaded seams or trims it, honours
+  `--music-offset` / fades, sets it to `--music-lufs` (-24 under voice by default, so any track
+  sits the same) and **ducks it by exactly `--duck-db` (default 9) wherever speech is detected**
+  on the voice bus, with ramps that start just before each line.
+- **Two ways to use it.** Post-render (recommended: render with narration, no music, then mix):
+  `--video` + `--output x.mp4` copies the picture and replaces the audio. Or build a stem
+  (`--voiceover-dir public/audio/scenes --gap 0.6 --output soundtrack.wav`) and play that one
+  file in Remotion. Either way the master lands at -14 LUFS / -1 dBTP, so `qc.py --render` passes.
+- Don't also put `backgroundMusicFile` in a template config when you mix this way, or the music
+  is in twice.
 
 ### Timing Sync (after voiceover)
 

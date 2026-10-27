@@ -207,6 +207,12 @@ uv run tools/voiceover.py --provider qwen3 --speaker Ryan --scene-dir public/aud
 # AI music (ACE-Step — free cloud API)
 uv run tools/music_gen.py --preset corporate-bg --duration 120 --output music.mp3
 
+# Free + local: Turkish (and 22 more languages) voiceover with Chatterbox, ffmpeg SFX pack,
+# and a mixer that fits your own royalty-free track under the voice
+uv run tools/voiceover.py --provider chatterbox --language tr --scene-dir public/audio/scenes --json
+uv run tools/sfx_pack.py --list
+uv run tools/mix_audio.py --video out/video.mp4 --music track.mp3 --sfx whoosh-soft@0.5 --output out/final.mp4
+
 # AI image generation (FLUX.2) and editing (Qwen-Image)
 uv run tools/flux2.py --preset title-bg --brand digital-samba --cloud modal
 uv run tools/image_edit.py --input photo.jpg --prompt "Add sunglasses" --cloud modal

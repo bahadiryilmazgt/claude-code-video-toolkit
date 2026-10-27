@@ -41,6 +41,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 from pacing import spoken_text
@@ -55,7 +56,16 @@ MIN_MATCH_RATIO = 0.6
 
 
 def norm(w: str) -> str:
-    return re.sub(r"[^a-z0-9']", "", w.lower())
+    """Match key for a word: lowercase, accents folded, punctuation dropped.
+
+    Unicode-aware, so non-English scripts align too: "Çünkü" and "çünkü," both
+    become "cunku" (an ASCII-only filter would reduce them to "nk"). Apostrophes
+    go too, since recognisers add them inconsistently (Turkish "Huni'nin" vs
+    "huninin"); this only keys the timing match, captions keep the script's spelling.
+    """
+    w = unicodedata.normalize("NFKD", w.replace("ı", "i").replace("İ", "I").lower())
+    w = "".join(c for c in w if not unicodedata.combining(c))
+    return re.sub(r"[\W_]", "", w)
 
 
 # ─── Transcription ──────────────────────────────────────────

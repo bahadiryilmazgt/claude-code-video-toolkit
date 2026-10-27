@@ -215,20 +215,21 @@
   "tools": {
     "voiceover": {
       "path": "tools/voiceover.py",
-      "description": "Generate TTS voiceovers using ElevenLabs, Qwen3-TTS, or 60db",
+      "description": "Generate TTS voiceovers using ElevenLabs, Qwen3-TTS, 60db, or local Chatterbox Multilingual",
       "usage": "uv run tools/voiceover.py --script SCRIPT.md --output out.mp3",
       "options": {
-        "provider": "TTS provider: elevenlabs (default), qwen3, 60db",
+        "provider": "TTS provider: elevenlabs (default), qwen3, 60db, chatterbox (free, local, 23 languages incl. Turkish)",
         "transport": "60db API transport: synthesize (default), stream, websocket",
         "no-enhance": "Disable 60db audio enhancement (on by default)",
         "stability": "Voice stability 0-1 (unified scale; auto-converted to 0-100 for 60db)",
         "similarity": "Similarity 0-1 (unified scale; auto-converted to 0-100 for 60db)",
         "model": "ElevenLabs: eleven_multilingual_v2 (default), eleven_flash_v2_5, eleven_v3, eleven_v4 (Text to Dialogue API; stability+similarity only, chunked >2,000 chars). Deprecated eleven_turbo_v2_5 is accepted with a warning and sent as eleven_flash_v2_5",
-        "pacingQC": "results include wpm + pacing label (fast/slow/ok); --max-wpm clamps fast takes with pitch-preserving atempo (floor 0.85x, --min-tempo lowers it to 0.7x)"
+        "pacingQC": "results include wpm + pacing label (fast/slow/ok); --max-wpm clamps fast takes with pitch-preserving atempo (floor 0.85x, --min-tempo lowers it to 0.7x)",
+        "chatterbox": "--language (code or name; Auto = brand chatterbox.language, else tr), --ref-audio (clone, no transcript needed), --exaggeration, --cfg-weight, --temperature, --seed, --device. All scenes run in one model load"
       },
       "status": "stable",
       "created": "2025-12-08",
-      "updated": "2026-10-21"
+      "updated": "2026-10-27"
     },
     "music": {
       "path": "tools/music.py",
@@ -294,6 +295,36 @@
       "created": "2025-12-08",
       "updated": "2026-10-21"
     },
+    "sfx_pack": {
+      "path": "tools/sfx_pack.py",
+      "description": "Free, local motion-graphics SFX pack synthesised with ffmpeg: whooshes, pop, click, tick, impacts, riser, transition sweep",
+      "usage": "uv run tools/sfx_pack.py",
+      "status": "beta",
+      "category": "audio-generation",
+      "backend": "ffmpeg (local)",
+      "output": "assets/sfx/*.wav (committed; deterministic, regenerate any time)",
+      "sounds": [
+        "whoosh-soft",
+        "whoosh-fast",
+        "pop-subtle",
+        "click",
+        "tick",
+        "impact-soft",
+        "impact-strong",
+        "riser",
+        "transition-sweep"
+      ],
+      "options": {
+        "list": "Names, lengths, suggested mix gain",
+        "only": "Comma-separated subset",
+        "output-dir": "Write elsewhere (e.g. a project's public/audio/sfx)",
+        "format": "wav (default) or mp3"
+      },
+      "envVars": [],
+      "estimatedCost": "Free",
+      "created": "2026-10-27",
+      "updated": "2026-10-27"
+    },
     "redub": {
       "path": "tools/redub.py",
       "description": "Redub video with different voice (extract audio, transcribe, TTS, replace)",
@@ -313,6 +344,26 @@
       "status": "beta",
       "created": "2025-12-28",
       "updated": "2025-12-28"
+    },
+    "mix_audio": {
+      "path": "tools/mix_audio.py",
+      "description": "Free, local soundtrack mixer: fits a user-supplied royalty-free music file to the video (crossfaded loop or trim, offset, fades), sets it by LUFS, ducks it under the voice by an exact dB, places SFX cues, masters to -14 LUFS / -1 dBTP, outputs audio or muxes into the video",
+      "usage": "uv run tools/mix_audio.py --video out/video.mp4 --music track.mp3 --sfx whoosh-soft@0.5 --output out/video-final.mp4",
+      "status": "beta",
+      "category": "audio-processing",
+      "backend": "ffmpeg (local)",
+      "options": {
+        "plan": "JSON plan (video, voiceover, music, sfx, master); --help-plan shows the format",
+        "video": "Rendered video; its audio is the voice bus (--ignore-video-audio to drop it)",
+        "voiceover": "FILE[@SEC] (repeatable) or --voiceover-dir DIR with --gap/--lead-in",
+        "music": "Music file; --music-lufs (default -24 under voice), --duck-db (default 9), --music-offset, --fade-in, --fade-out, --loop-crossfade, --no-loop",
+        "sfx": "NAME|FILE@SEC[:GAIN_DB] (repeatable); pack names resolve to assets/sfx",
+        "target-lufs": "Master loudness (default -14); --no-master skips it"
+      },
+      "envVars": [],
+      "estimatedCost": "Free",
+      "created": "2026-10-27",
+      "updated": "2026-10-27"
     },
     "dewatermark": {
       "path": "tools/dewatermark.py",
@@ -633,6 +684,28 @@
       "estimatedCost": "$0.00002 per character ($0.01 minimum per request)",
       "created": "2026-06-08",
       "updated": "2026-06-08"
+    },
+    "chatterbox_tts": {
+      "path": "tools/chatterbox_tts.py",
+      "description": "Free, local multilingual TTS with Chatterbox Multilingual (Resemble AI, MIT) - 23 languages incl. Turkish, zero-shot voice cloning",
+      "usage": "uv run tools/chatterbox_tts.py --text \"Merhaba dünya\" --output hello.mp3",
+      "status": "beta",
+      "category": "audio-generation",
+      "backend": "local (CPU, CUDA or MPS)",
+      "requires": "uv; ~3 GB weights + an isolated env built on first run (tools/chatterbox_worker.py, PEP 723, locked in chatterbox_worker.py.lock)",
+      "options": {
+        "language": "Language code or name (default: tr). --list-languages",
+        "ref-audio": "10-20s clean reference clip in the target language to clone",
+        "exaggeration": "Emotion intensity 0.25-2 (default 0.5)",
+        "cfg-weight": "Pace/adherence 0-1 (default 0.5; ~0.3 slower)",
+        "temperature": "Sampling temperature (default 0.8)",
+        "seed": "Seed for repeatable takes (default 0; -1 random)",
+        "setup": "Build the environment and download the weights"
+      },
+      "envVars": [],
+      "estimatedCost": "Free (local compute). CPU: ~10x slower than real time; CUDA: about real time",
+      "created": "2026-10-27",
+      "updated": "2026-10-27"
     },
     "sync_timing": {
       "path": "tools/sync_timing.py",
