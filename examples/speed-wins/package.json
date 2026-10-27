@@ -1,0 +1,22 @@
+{
+  "name": "speed-wins",
+  "version": "1.0.0",
+  "description": "Speed Wins: 9:16 Instagram Reel for health-tourism clinics on WhatsApp response time (Turkish VO)",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render SpeedWins out/speed-wins.mp4",
+    "render:preview": "remotion render SpeedWins out/preview.mp4 --scale=0.5",
+    "audio": "cd ../.. && uv run examples/speed-wins/gen_audio.py"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.529",
+    "@remotion/transitions": "4.0.529",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "4.0.529"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}

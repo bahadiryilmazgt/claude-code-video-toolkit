@@ -1,0 +1,42 @@
+[
+ {
+  "word": "Reklama",
+  "start": 0.0,
+  "end": 0.357
+ },
+ {
+  "word": "para",
+  "start": 0.357,
+  "end": 0.605
+ },
+ {
+  "word": "harcıyorsun",
+  "start": 0.605,
+  "end": 1.407
+ },
+ {
+  "word": "ama",
+  "start": 1.607,
+  "end": 1.808
+ },
+ {
+  "word": "mesajlara",
+  "start": 1.808,
+  "end": 2.374
+ },
+ {
+  "word": "geç",
+  "start": 2.374,
+  "end": 2.586
+ },
+ {
+  "word": "mi",
+  "start": 2.621,
+  "end": 2.716
+ },
+ {
+  "word": "dönüyorsun",
+  "start": 2.716,
+  "end": 3.364
+ }
+]

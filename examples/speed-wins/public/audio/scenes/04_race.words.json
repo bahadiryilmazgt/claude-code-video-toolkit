@@ -1,0 +1,52 @@
+[
+ {
+  "word": "Sen",
+  "start": 0.0,
+  "end": 0.19
+ },
+ {
+  "word": "saatler",
+  "start": 0.19,
+  "end": 0.65
+ },
+ {
+  "word": "sonra",
+  "start": 0.65,
+  "end": 0.944
+ },
+ {
+  "word": "dönüyorsun",
+  "start": 0.945,
+  "end": 1.617
+ },
+ {
+  "word": "rakibin",
+  "start": 1.782,
+  "end": 2.218
+ },
+ {
+  "word": "ise",
+  "start": 2.218,
+  "end": 2.466
+ },
+ {
+  "word": "birkaç",
+  "start": 2.478,
+  "end": 2.831
+ },
+ {
+  "word": "dakikada",
+  "start": 2.843,
+  "end": 3.279
+ },
+ {
+  "word": "dönmüş",
+  "start": 3.279,
+  "end": 3.68
+ },
+ {
+  "word": "bile",
+  "start": 3.692,
+  "end": 3.928
+ }
+]

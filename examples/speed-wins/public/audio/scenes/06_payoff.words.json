@@ -1,0 +1,42 @@
+[
+ {
+  "word": "İlk",
+  "start": 0.0,
+  "end": 0.095
+ },
+ {
+  "word": "dakikalarda",
+  "start": 0.13,
+  "end": 0.767
+ },
+ {
+  "word": "dönen",
+  "start": 0.767,
+  "end": 1.073
+ },
+ {
+  "word": "klinik",
+  "start": 1.073,
+  "end": 1.451
+ },
+ {
+  "word": "hastayı",
+  "start": 1.616,
+  "end": 1.993
+ },
+ {
+  "word": "kazanan",
+  "start": 1.993,
+  "end": 2.406
+ },
+ {
+  "word": "klinik",
+  "start": 2.406,
+  "end": 2.736
+ },
+ {
+  "word": "olur",
+  "start": 2.736,
+  "end": 3.019
+ }
+]

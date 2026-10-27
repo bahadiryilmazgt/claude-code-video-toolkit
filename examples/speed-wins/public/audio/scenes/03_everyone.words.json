@@ -1,0 +1,52 @@
+[
+ {
+  "word": "Ama",
+  "start": 0.0,
+  "end": 0.164
+ },
+ {
+  "word": "sadece",
+  "start": 0.165,
+  "end": 0.636
+ },
+ {
+  "word": "sana",
+  "start": 0.636,
+  "end": 0.907
+ },
+ {
+  "word": "değil",
+  "start": 0.907,
+  "end": 1.261
+ },
+ {
+  "word": "Aynı",
+  "start": 2.225,
+  "end": 2.52
+ },
+ {
+  "word": "anda",
+  "start": 2.52,
+  "end": 2.78
+ },
+ {
+  "word": "birkaç",
+  "start": 2.78,
+  "end": 3.145
+ },
+ {
+  "word": "kliniğe",
+  "start": 3.169,
+  "end": 3.593
+ },
+ {
+  "word": "birden",
+  "start": 3.593,
+  "end": 3.959
+ },
+ {
+  "word": "yazıyor",
+  "start": 3.959,
+  "end": 4.442
+ }
+]

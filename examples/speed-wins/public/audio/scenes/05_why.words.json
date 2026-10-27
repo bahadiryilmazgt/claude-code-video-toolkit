@@ -1,0 +1,77 @@
+[
+ {
+  "word": "Sağlık",
+  "start": 0.0,
+  "end": 0.33
+ },
+ {
+  "word": "turizminde",
+  "start": 0.342,
+  "end": 0.967
+ },
+ {
+  "word": "hasta",
+  "start": 0.967,
+  "end": 1.332
+ },
+ {
+  "word": "güven",
+  "start": 1.332,
+  "end": 1.651
+ },
+ {
+  "word": "arıyor",
+  "start": 1.651,
+  "end": 2.016
+ },
+ {
+  "word": "Hızlı",
+  "start": 3.051,
+  "end": 3.334
+ },
+ {
+  "word": "cevap",
+  "start": 3.334,
+  "end": 3.664
+ },
+ {
+  "word": "ona",
+  "start": 3.723,
+  "end": 3.9
+ },
+ {
+  "word": "tek",
+  "start": 3.9,
+  "end": 4.112
+ },
+ {
+  "word": "bir",
+  "start": 4.124,
+  "end": 4.219
+ },
+ {
+  "word": "şey",
+  "start": 4.219,
+  "end": 4.419
+ },
+ {
+  "word": "söyler",
+  "start": 4.419,
+  "end": 4.867
+ },
+ {
+  "word": "burada",
+  "start": 5.032,
+  "end": 5.398
+ },
+ {
+  "word": "benimle",
+  "start": 5.398,
+  "end": 5.728
+ },
+ {
+  "word": "ilgileniyorlar",
+  "start": 5.728,
+  "end": 6.495
+ }
+]

@@ -11,6 +11,7 @@ Curated showcase projects demonstrating toolkit capabilities.
 | data-viz-chart | moviepy + matplotlib | — | Animated time-series chart with deterministic title and source attribution. Runs with included data file. | Beginner |
 | ds-crt-stinger | LTX-2 + moviepy + PIL | — | 6s brand stinger — LTX-2 CRT LoRA footage + post-processed grunged logo | Intermediate |
 | sky-blue-short | concept-explainer-short (moviepy) | — | 52s vertical 9:16 explainer short — Qwen3 VO + Ideogram cards + LTX b-roll + burned captions. All assets committed; re-renders with `uv run build.py`. | Intermediate |
+| speed-wins | Remotion (custom) | — | 37s vertical 9:16 Instagram Reel (Turkish VO): health-tourism clinics and WhatsApp response time. Kinetic type, synthetic chat UI, word-cued SFX; VO, SFX and music all generated, no API keys. | Intermediate |
 | ds-release-649 | Remotion (custom) | [Digital Samba](https://digitalsamba.com) | 80s synthetic release-notes video. Product UIs rebuilt from source, scripted cursor and camera, Lugh voice. All assets committed. | Advanced |
 | ds-free-schedule-demo | Remotion (custom) | [Digital Samba](https://digitalsamba.com) | 26s synthetic product demo with a SoulX narrator tile. All assets committed. | Intermediate |
 | digital-samba-skill-demo | Remotion product-demo | [Digital Samba](https://digitalsamba.com) | Marketing video for Claude Code skill | Intermediate |

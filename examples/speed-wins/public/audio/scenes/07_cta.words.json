@@ -1,0 +1,47 @@
+[
+ {
+  "word": "Reklam",
+  "start": 0.0,
+  "end": 0.395
+ },
+ {
+  "word": "bütçen",
+  "start": 0.395,
+  "end": 0.82
+ },
+ {
+  "word": "boşa",
+  "start": 0.82,
+  "end": 1.079
+ },
+ {
+  "word": "gitmesin",
+  "start": 1.079,
+  "end": 1.622
+ },
+ {
+  "word": "Mesajlara",
+  "start": 2.574,
+  "end": 3.152
+ },
+ {
+  "word": "hızlı",
+  "start": 3.152,
+  "end": 3.494
+ },
+ {
+  "word": "dön",
+  "start": 3.494,
+  "end": 3.812
+ },
+ {
+  "word": "hastayı",
+  "start": 3.907,
+  "end": 4.284
+ },
+ {
+  "word": "kaybetme",
+  "start": 4.284,
+  "end": 4.862
+ }
+]

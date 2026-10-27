@@ -1,0 +1,337 @@
+{
+ "fps": 30,
+ "durationInFrames": 1108,
+ "scenes": [
+  {
+   "id": "01_hook",
+   "from": 0,
+   "durationInFrames": 137,
+   "voFrom": 16,
+   "voSeconds": 3.553,
+   "words": [
+    {
+     "w": "Reklama",
+     "f": 16
+    },
+    {
+     "w": "para",
+     "f": 27
+    },
+    {
+     "w": "harcıyorsun",
+     "f": 35
+    },
+    {
+     "w": "ama",
+     "f": 65
+    },
+    {
+     "w": "mesajlara",
+     "f": 71
+    },
+    {
+     "w": "geç",
+     "f": 88
+    },
+    {
+     "w": "mi",
+     "f": 95
+    },
+    {
+     "w": "dönüyorsun",
+     "f": 98
+    }
+   ]
+  },
+  {
+   "id": "02_patient",
+   "from": 137,
+   "durationInFrames": 112,
+   "voFrom": 143,
+   "voSeconds": 3.082,
+   "words": [
+    {
+     "w": "Hasta",
+     "f": 6
+    },
+    {
+     "w": "reklamını",
+     "f": 14
+    },
+    {
+     "w": "görüyor",
+     "f": 30
+    },
+    {
+     "w": "ve",
+     "f": 47
+    },
+    {
+     "w": "hemen",
+     "f": 50
+    },
+    {
+     "w": "WhatsApp'tan",
+     "f": 60
+    },
+    {
+     "w": "yazıyor",
+     "f": 78
+    }
+   ]
+  },
+  {
+   "id": "03_everyone",
+   "from": 249,
+   "durationInFrames": 159,
+   "voFrom": 255,
+   "voSeconds": 4.65,
+   "words": [
+    {
+     "w": "Ama",
+     "f": 6
+    },
+    {
+     "w": "sadece",
+     "f": 11
+    },
+    {
+     "w": "sana",
+     "f": 25
+    },
+    {
+     "w": "değil",
+     "f": 33
+    },
+    {
+     "w": "Aynı",
+     "f": 73
+    },
+    {
+     "w": "anda",
+     "f": 82
+    },
+    {
+     "w": "birkaç",
+     "f": 89
+    },
+    {
+     "w": "kliniğe",
+     "f": 101
+    },
+    {
+     "w": "birden",
+     "f": 114
+    },
+    {
+     "w": "yazıyor",
+     "f": 125
+    }
+   ]
+  },
+  {
+   "id": "04_race",
+   "from": 408,
+   "durationInFrames": 143,
+   "voFrom": 414,
+   "voSeconds": 4.127,
+   "words": [
+    {
+     "w": "Sen",
+     "f": 6
+    },
+    {
+     "w": "saatler",
+     "f": 12
+    },
+    {
+     "w": "sonra",
+     "f": 26
+    },
+    {
+     "w": "dönüyorsun",
+     "f": 34
+    },
+    {
+     "w": "rakibin",
+     "f": 59
+    },
+    {
+     "w": "ise",
+     "f": 73
+    },
+    {
+     "w": "birkaç",
+     "f": 80
+    },
+    {
+     "w": "dakikada",
+     "f": 91
+    },
+    {
+     "w": "dönmüş",
+     "f": 104
+    },
+    {
+     "w": "bile",
+     "f": 117
+    }
+   ]
+  },
+  {
+   "id": "05_why",
+   "from": 551,
+   "durationInFrames": 221,
+   "voFrom": 557,
+   "voSeconds": 6.713,
+   "words": [
+    {
+     "w": "Sağlık",
+     "f": 6
+    },
+    {
+     "w": "turizminde",
+     "f": 16
+    },
+    {
+     "w": "hasta",
+     "f": 35
+    },
+    {
+     "w": "güven",
+     "f": 46
+    },
+    {
+     "w": "arıyor",
+     "f": 56
+    },
+    {
+     "w": "Hızlı",
+     "f": 98
+    },
+    {
+     "w": "cevap",
+     "f": 106
+    },
+    {
+     "w": "ona",
+     "f": 118
+    },
+    {
+     "w": "tek",
+     "f": 123
+    },
+    {
+     "w": "bir",
+     "f": 130
+    },
+    {
+     "w": "şey",
+     "f": 133
+    },
+    {
+     "w": "söyler",
+     "f": 139
+    },
+    {
+     "w": "burada",
+     "f": 157
+    },
+    {
+     "w": "benimle",
+     "f": 168
+    },
+    {
+     "w": "ilgileniyorlar",
+     "f": 178
+    }
+   ]
+  },
+  {
+   "id": "06_payoff",
+   "from": 772,
+   "durationInFrames": 115,
+   "voFrom": 778,
+   "voSeconds": 3.187,
+   "words": [
+    {
+     "w": "İlk",
+     "f": 6
+    },
+    {
+     "w": "dakikalarda",
+     "f": 10
+    },
+    {
+     "w": "dönen",
+     "f": 29
+    },
+    {
+     "w": "klinik",
+     "f": 38
+    },
+    {
+     "w": "hastayı",
+     "f": 54
+    },
+    {
+     "w": "kazanan",
+     "f": 66
+    },
+    {
+     "w": "klinik",
+     "f": 78
+    },
+    {
+     "w": "olur",
+     "f": 88
+    }
+   ]
+  },
+  {
+   "id": "07_cta",
+   "from": 887,
+   "durationInFrames": 221,
+   "voFrom": 893,
+   "voSeconds": 5.068,
+   "words": [
+    {
+     "w": "Reklam",
+     "f": 6
+    },
+    {
+     "w": "bütçen",
+     "f": 18
+    },
+    {
+     "w": "boşa",
+     "f": 31
+    },
+    {
+     "w": "gitmesin",
+     "f": 38
+    },
+    {
+     "w": "Mesajlara",
+     "f": 83
+    },
+    {
+     "w": "hızlı",
+     "f": 101
+    },
+    {
+     "w": "dön",
+     "f": 111
+    },
+    {
+     "w": "hastayı",
+     "f": 123
+    },
+    {
+     "w": "kaybetme",
+     "f": 135
+    }
+   ]
+  }
+ ]
+}
