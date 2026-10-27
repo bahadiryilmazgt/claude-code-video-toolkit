@@ -400,8 +400,12 @@ def mix(tl: dict, output: Path, vo_lufs: float) -> dict:
             measured = measure_loudness(premaster)
             if measured and measured.get("lufs") is not None:
                 mixed = tmp / "master.wav"
-                err = normalize_loudness(premaster, mixed, tl["master"]["lufs"],
-                                         tl["master"]["true_peak"], measured)
+                # AAC/MP3 encoding adds inter-sample overs (~0.1-0.4 dB), so a
+                # lossy output is mastered with extra headroom to stay under the ceiling.
+                tp = tl["master"]["true_peak"]
+                if output.suffix.lower() not in (".wav",):
+                    tp -= 0.5
+                err = normalize_loudness(premaster, mixed, tl["master"]["lufs"], tp, measured)
                 if err:
                     raise RuntimeError(f"mastering failed: {err}")
                 report["premaster_lufs"] = measured["lufs"]
