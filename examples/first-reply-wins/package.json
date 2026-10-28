@@ -1,0 +1,23 @@
+{
+  "name": "first-reply-wins",
+  "version": "1.0.0",
+  "description": "Silent 9:16 motion-design showcase: in health tourism, the first reply wins",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render FirstReplyWins out/first-reply-wins.mp4",
+    "render:preview": "remotion render FirstReplyWins out/preview.mp4 --scale=0.5",
+    "audio": "python3 audio/make_audio.py"
+  },
+  "dependencies": {
+    "@fontsource/montserrat": "5.1.0",
+    "@remotion/cli": "4.0.529",
+    "@remotion/paths": "4.0.529",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "4.0.529"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}
