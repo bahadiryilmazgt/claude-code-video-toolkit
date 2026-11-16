@@ -444,5 +444,52 @@
    "g": 0.45,
    "d": 3.0
   }
+ ],
+ "voiceover": [
+  {
+   "b": 0.7,
+   "id": "01-ad",
+   "text": "Reklamın çalışıyor, hastalar seni buluyor. Peki, mesajlar ne durumda?"
+  },
+  {
+   "b": 13.5,
+   "id": "02-message",
+   "text": "Bir hasta sana yazdı. Fiyat bilgisi istiyor."
+  },
+  {
+   "b": 21,
+   "id": "03-notonly",
+   "text": "Ama sadece sana değil. Aynı mesajı, aynı anda birkaç kliniğe birden gönderdi."
+  },
+  {
+   "b": 32.75,
+   "id": "04a-race",
+   "text": "Şimdi asıl soru şu: kim önce cevap verecek?"
+  },
+  {
+   "b": 39.25,
+   "id": "04b-race",
+   "text": "Rakibin iki dakikada döndü. Sen ise, üç saat sonra."
+  },
+  {
+   "b": 49,
+   "id": "05-choice",
+   "text": "Hasta, ilk dönenle konuşur ve randevuyu ona verir."
+  },
+  {
+   "b": 56.75,
+   "id": "06-why",
+   "text": "Sağlık turizminde hasta güven arar. Hızlı cevap aldığında, burada benimle ilgileniyorlar der."
+  },
+  {
+   "b": 68.75,
+   "id": "07-payoff",
+   "text": "Yanıt süresi kısaldıkça randevular artar. Hızlı dönen kazanır."
+  },
+  {
+   "b": 80.75,
+   "id": "08-ending",
+   "text": "Reklam bütçen boşa gitmesin. Mesajlara hızlı dön, hastayı kaybetme."
+  }
  ]
 }

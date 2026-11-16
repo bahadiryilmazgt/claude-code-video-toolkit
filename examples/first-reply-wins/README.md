@@ -1,6 +1,6 @@
 # First Reply Wins
 
-A silent 9:16 motion-design showcase for Instagram Reels, about 53 seconds long. A patient sees a clinic ad and
+A 9:16 motion-design showcase for Instagram Reels (v1 silent, v2 narrated), about 53 seconds long. A patient sees a clinic ad and
 messages several clinics at once, and the clinic that replies first wins the appointment. The message:
 in health tourism, reply speed = trust = patients.
 
@@ -11,10 +11,21 @@ nothing is AI-generated, so all the Turkish copy renders exactly as written (Mon
 ```bash
 npm install
 npm run studio                 # preview
-python3 audio/make_audio.py    # regenerate the soundtrack (numpy only)
-ffmpeg -y -i public/audio/soundtrack_raw.wav -af loudnorm=I=-14:TP=-1.5 public/audio/soundtrack.wav
+# soundtrack (v2): Atakan narration + ElevenLabs SFX + ElevenLabs Music, mixed and ducked
+(cd ../.. && uv run examples/first-reply-wins/audio/make_audio_el.py)
 npm run render                 # out/first-reply-wins.mp4 (1080x1920, 30fps)
 ```
+
+**v2 soundtrack (ElevenLabs).** `audio/make_audio_el.py` reads the `voiceover` cues and
+`sfx` events from `src/timeline.json`. It generates the missing files and caches them in
+`audio/el/` (committed), so a re-run only re-mixes and spends no credits. The narration
+uses the repo's house voice (Atakan on `eleven_v4`). The music is one ElevenLabs Music
+composition with sections sized to the scenes (calm intro, race tension, bright resolution,
+warm ending) and is ducked under the narration. To regenerate one asset, delete its file in
+`audio/el/`.
+
+The v1 soundtrack is `audio/make_audio.py`. It is silent (no narration), synthesized with
+numpy only, and needs no API key.
 
 ## How it is put together
 
