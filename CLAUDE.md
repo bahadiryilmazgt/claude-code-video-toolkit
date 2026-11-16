@@ -144,6 +144,14 @@ Utility tools work on any video file without requiring a project structure.
 
 ### Voiceover Generation
 
+**House voice (fixed rule):** all narration and dubbing in this repo use the ElevenLabs voice
+**Atakan** (`e9a1KJ0kRpwPORrz92UT`, Turkish, Istanbul) on **`eleven_v4`** with the voice's own
+stored settings. `_internal/toolkit-registry.json` → `config` holds this (`voiceId`,
+`elevenlabsModel`, `elevenlabsUseVoiceSettings`), so `voiceover.py` and `redub.py` need no
+`--voice-id`/`--model`/`--stability` flags. Don't override them unless the user asks: the
+old defaults (multilingual_v2, stability 0.85) produced flat, unnatural Turkish. Write narration
+as spoken Turkish in full sentences, not on-screen slogan fragments.
+
 Three TTS providers share one `voiceover.py` interface (`--provider`):
 **elevenlabs** (default), **qwen3** (self-hosted, free), and **60db** (premium cloud).
 Voice settings (`--stability`, `--similarity`, `--speed`) use a **unified 0-1 scale**

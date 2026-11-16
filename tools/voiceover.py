@@ -44,6 +44,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from config import (
     get_brand_dir,
     get_elevenlabs_api_key,
+    get_elevenlabs_defaults,
     get_sixtydb_api_key,
     get_sixtydb_voice_id,
     get_voice_id,
@@ -199,9 +200,10 @@ Examples:
         "--model",
         "-m",
         type=str,
-        default="eleven_multilingual_v2",
+        default=None,
         choices=ELEVENLABS_TTS_MODELS,
-        help="ElevenLabs model (default: eleven_multilingual_v2). eleven_v4, released "
+        help="ElevenLabs model (default: config.elevenlabsModel in toolkit-registry.json, "
+             "else eleven_multilingual_v2). eleven_v4, released "
              "2026-09-28 (https://elevenlabs.io/docs/changelog/2026/9/28), is the most "
              "expressive: it runs on the Text to Dialogue API and takes stability + "
              "similarity only, no style/speed/SSML. eleven_turbo_v2_5 is deprecated: "
@@ -984,7 +986,8 @@ def main():
     ensure_utf8_output()  # Windows: piped stdout defaults to cp1252
     load_dotenv()
     args = parse_args()
-    args.model = resolve_model_id(args.model)
+    el_defaults = get_elevenlabs_defaults()
+    args.model = resolve_model_id(args.model or el_defaults["model"] or "eleven_multilingual_v2")
     if args.min_tempo is not None:
         import pacing
         try:
@@ -1175,6 +1178,14 @@ def main():
                 file=sys.stderr,
             )
             sys.exit(1)
+
+        # Repo policy: let v4 read with the voice's own stored settings (what the
+        # ElevenLabs website does) unless stability/similarity were set explicitly.
+        if el_defaults["use_voice_settings"] and is_dialogue_model(args.model):
+            if args.stability == 0.85:
+                args.stability = None
+            if args.similarity == 0.95:
+                args.similarity = None
 
         ElevenLabs, _, _ = _get_elevenlabs_imports()
         client = ElevenLabs(api_key=api_key)

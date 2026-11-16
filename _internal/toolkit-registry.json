@@ -1380,7 +1380,9 @@
     }
   },
   "config": {
-    "voiceId": "YOUR_VOICE_ID_HERE",
+    "voiceId": "e9a1KJ0kRpwPORrz92UT",
+    "elevenlabsModel": "eleven_v4",
+    "elevenlabsUseVoiceSettings": true,
     "sixtydbVoiceId": null,
     "defaultFps": 30,
     "defaultResolution": {

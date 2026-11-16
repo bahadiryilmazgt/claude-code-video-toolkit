@@ -44,6 +44,21 @@ def get_voice_id() -> str | None:
     return registry.get("config", {}).get("voiceId")
 
 
+def get_elevenlabs_defaults() -> dict:
+    """Repo-wide ElevenLabs defaults from the registry config.
+
+    `elevenlabsModel` replaces the CLIs' built-in model when --model is not given.
+    `elevenlabsUseVoiceSettings` makes Eleven v4 (Text to Dialogue) calls send no
+    stability/similarity unless set on the command line, so the voice reads with
+    its own stored settings, as it does on the ElevenLabs website.
+    """
+    config = load_registry().get("config", {})
+    return {
+        "model": config.get("elevenlabsModel"),
+        "use_voice_settings": bool(config.get("elevenlabsUseVoiceSettings")),
+    }
+
+
 def get_elevenlabs_api_key() -> str | None:
     """Get ElevenLabs API key from environment."""
     from dotenv import load_dotenv
