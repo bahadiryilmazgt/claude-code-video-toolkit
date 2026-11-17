@@ -11,6 +11,7 @@ Curated showcase projects demonstrating toolkit capabilities.
 | data-viz-chart | moviepy + matplotlib | — | Animated time-series chart with deterministic title and source attribution. Runs with included data file. | Beginner |
 | ds-crt-stinger | LTX-2 + moviepy + PIL | — | 6s brand stinger — LTX-2 CRT LoRA footage + post-processed grunged logo | Intermediate |
 | sky-blue-short | concept-explainer-short (moviepy) | — | 52s vertical 9:16 explainer short — Qwen3 VO + Ideogram cards + LTX b-roll + burned captions. All assets committed; re-renders with `uv run build.py`. | Intermediate |
+| cute-bear-asmr | Remotion + three.js (custom) | — | 30s vertical 9:16 kids' food-tasting ASMR short. Procedural 3D plush bear with shell fur, bite/squish/tear food states, and fully synthesized ASMR foley + voice, all frame-synced from one timeline. No paid APIs, no GPU. | Advanced |
 | ds-release-649 | Remotion (custom) | [Digital Samba](https://digitalsamba.com) | 80s synthetic release-notes video. Product UIs rebuilt from source, scripted cursor and camera, Lugh voice. All assets committed. | Advanced |
 | ds-free-schedule-demo | Remotion (custom) | [Digital Samba](https://digitalsamba.com) | 26s synthetic product demo with a SoulX narrator tile. All assets committed. | Intermediate |
 | digital-samba-skill-demo | Remotion product-demo | [Digital Samba](https://digitalsamba.com) | Marketing video for Claude Code skill | Intermediate |
@@ -30,7 +31,7 @@ Thank you to these organizations and individuals for sharing their video project
 
 ## Using Examples
 
-**Remotion examples** (`hello-world`, `digital-samba-skill-demo`, `sprint-review-cho-oyu`, `ds-release-649`, `ds-free-schedule-demo`):
+**Remotion examples** (`hello-world`, `digital-samba-skill-demo`, `sprint-review-cho-oyu`, `ds-release-649`, `ds-free-schedule-demo`, `cute-bear-asmr`):
 
 ```bash
 cp -r examples/example-name projects/my-project

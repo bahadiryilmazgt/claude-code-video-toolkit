@@ -1,0 +1,572 @@
+{
+ "fps": 30,
+ "duration": 30.0,
+ "walkPeriod": 0.6,
+ "marks": {
+  "walkEnd": 2.5333,
+  "arrive": 2.6,
+  "lookL": 2.8,
+  "lookR": 3.3333,
+  "sniff": 3.9333,
+  "excite": 4.4667,
+  "cookieReach": 5.0,
+  "cookieGrab": 5.6333,
+  "cookieCut": 6.1,
+  "cookieOpen1": 6.5333,
+  "cookieBite1": 7.0,
+  "cookieOpen2": 8.6333,
+  "cookieBite2": 9.0,
+  "cookieMS": 10.4,
+  "cookieDown": 10.8667,
+  "lemonLook": 11.0,
+  "lemonReach": 11.5333,
+  "lemonGrab": 12.1,
+  "lemonCut": 12.6,
+  "lemonOpen": 12.7,
+  "lemonBite": 13.0,
+  "sour": 13.0667,
+  "shake": 14.5,
+  "stunned": 15.4667,
+  "blink1": 15.9333,
+  "blink2": 16.3,
+  "lemonDownStart": 16.4667,
+  "lemonDown": 16.9,
+  "marshCut": 17.0,
+  "marshGrab": 17.5333,
+  "marshECU": 18.0667,
+  "sq0a": 18.2,
+  "sq0b": 18.5,
+  "sq0c": 18.8667,
+  "sq1a": 19.0,
+  "sq1b": 19.3333,
+  "sq1c": 19.7,
+  "marshCU": 19.7333,
+  "tearA": 19.9,
+  "tearB": 20.4667,
+  "pieceIn": 20.8667,
+  "marshMS": 22.3,
+  "marshDown": 22.7667,
+  "strawReach": 23.0,
+  "strawGrab": 23.5333,
+  "strawCut": 24.0,
+  "strawBite1": 24.4,
+  "strawBite2": 25.3,
+  "calyxDrop": 25.6,
+  "cheeks": 26.3333,
+  "waveCut": 27.7333,
+  "wave": 28.0
+ },
+ "chews": {
+  "cookie1": [
+   7.3667,
+   7.7,
+   8.0333,
+   8.3667
+  ],
+  "cookie2": [
+   9.3333,
+   9.6667,
+   9.9667,
+   10.3
+  ],
+  "marsh": [
+   21.1333,
+   21.4667,
+   21.8,
+   22.1333
+  ],
+  "straw1": [
+   24.7333,
+   25.0
+  ],
+  "straw2": [
+   25.6333,
+   25.9333,
+   26.2333
+  ],
+  "lemon": [
+   14.0667,
+   14.3333
+  ]
+ },
+ "squeezes": [
+  [
+   18.2,
+   18.5,
+   18.8667
+  ],
+  [
+   19.0,
+   19.3333,
+   19.7
+  ]
+ ],
+ "blinks": [
+  1.2,
+  3.5,
+  5.3,
+  10.6,
+  11.9,
+  17.3,
+  23.2,
+  29.1
+ ],
+ "hearts": [
+  26.5,
+  26.8,
+  27.1,
+  27.4
+ ],
+ "events": [
+  {
+   "type": "step",
+   "t": 0.1333,
+   "side": "L",
+   "gain": 0.482
+  },
+  {
+   "type": "step",
+   "t": 0.4667,
+   "side": "R",
+   "gain": 0.547
+  },
+  {
+   "type": "step",
+   "t": 0.7333,
+   "side": "L",
+   "gain": 0.612
+  },
+  {
+   "type": "step",
+   "t": 1.0667,
+   "side": "R",
+   "gain": 0.676
+  },
+  {
+   "type": "step",
+   "t": 1.3333,
+   "side": "L",
+   "gain": 0.741
+  },
+  {
+   "type": "step",
+   "t": 1.6667,
+   "side": "R",
+   "gain": 0.806
+  },
+  {
+   "type": "step",
+   "t": 1.9333,
+   "side": "L",
+   "gain": 0.871
+  },
+  {
+   "type": "step",
+   "t": 2.2667,
+   "side": "R",
+   "gain": 0.935
+  },
+  {
+   "type": "step",
+   "t": 2.5333,
+   "side": "L",
+   "gain": 0.6
+  },
+  {
+   "type": "settle",
+   "t": 2.6
+  },
+  {
+   "type": "pat",
+   "t": 2.8333,
+   "gain": 0.45
+  },
+  {
+   "type": "pat",
+   "t": 2.9,
+   "gain": 0.4
+  },
+  {
+   "type": "voc",
+   "t": 2.9333,
+   "kind": "curious",
+   "dur": 0.5
+  },
+  {
+   "type": "sniff",
+   "t": 3.9333
+  },
+  {
+   "type": "sniff",
+   "t": 4.1333
+  },
+  {
+   "type": "sniff",
+   "t": 4.3
+  },
+  {
+   "type": "twinkle",
+   "t": 4.4667,
+   "gain": 0.5
+  },
+  {
+   "type": "voc",
+   "t": 4.5,
+   "kind": "ooh",
+   "dur": 0.42
+  },
+  {
+   "type": "clap",
+   "t": 4.6667
+  },
+  {
+   "type": "clap",
+   "t": 4.8667
+  },
+  {
+   "type": "tick",
+   "t": 5.6333,
+   "mat": "ceramic",
+   "gain": 0.55
+  },
+  {
+   "type": "twinkle",
+   "t": 6.3,
+   "gain": 0.35
+  },
+  {
+   "type": "cookie_bite",
+   "t": 7.0,
+   "gain": 1.0
+  },
+  {
+   "type": "crumbs",
+   "t": 7.3333,
+   "n": 9
+  },
+  {
+   "type": "cookie_chew",
+   "t": 7.3667,
+   "gain": 0.85
+  },
+  {
+   "type": "voc",
+   "t": 7.5333,
+   "kind": "mmm",
+   "dur": 0.9
+  },
+  {
+   "type": "cookie_chew",
+   "t": 7.7,
+   "gain": 0.72
+  },
+  {
+   "type": "cookie_chew",
+   "t": 8.0333,
+   "gain": 0.59
+  },
+  {
+   "type": "cookie_chew",
+   "t": 8.3667,
+   "gain": 0.46
+  },
+  {
+   "type": "cookie_bite",
+   "t": 9.0,
+   "gain": 0.92
+  },
+  {
+   "type": "crumbs",
+   "t": 9.3,
+   "n": 8
+  },
+  {
+   "type": "cookie_chew",
+   "t": 9.3333,
+   "gain": 0.8
+  },
+  {
+   "type": "cookie_chew",
+   "t": 9.6667,
+   "gain": 0.67
+  },
+  {
+   "type": "voc",
+   "t": 9.7333,
+   "kind": "mmhm",
+   "dur": 0.55
+  },
+  {
+   "type": "cookie_chew",
+   "t": 9.9667,
+   "gain": 0.54
+  },
+  {
+   "type": "cookie_chew",
+   "t": 10.3,
+   "gain": 0.41
+  },
+  {
+   "type": "tick",
+   "t": 10.8667,
+   "mat": "cookie_plate",
+   "gain": 0.6
+  },
+  {
+   "type": "voc",
+   "t": 11.2,
+   "kind": "hm",
+   "dur": 0.4
+  },
+  {
+   "type": "tick",
+   "t": 12.1,
+   "mat": "wet",
+   "gain": 0.5
+  },
+  {
+   "type": "sniff",
+   "t": 12.5333
+  },
+  {
+   "type": "lemon_bite",
+   "t": 13.0
+  },
+  {
+   "type": "voc",
+   "t": 13.1333,
+   "kind": "eek",
+   "dur": 0.62
+  },
+  {
+   "type": "shiver",
+   "t": 13.2,
+   "dur": 0.7
+  },
+  {
+   "type": "drips",
+   "t": 13.3,
+   "n": 5
+  },
+  {
+   "type": "juicy_chew",
+   "t": 14.0667,
+   "gain": 0.45
+  },
+  {
+   "type": "juicy_chew",
+   "t": 14.3333,
+   "gain": 0.45
+  },
+  {
+   "type": "swish",
+   "t": 14.5667,
+   "dir": 1,
+   "gain": 0.8
+  },
+  {
+   "type": "swish",
+   "t": 14.8,
+   "dir": -1,
+   "gain": 0.66
+  },
+  {
+   "type": "swish",
+   "t": 15.0667,
+   "dir": 1,
+   "gain": 0.52
+  },
+  {
+   "type": "swish",
+   "t": 15.3,
+   "dir": -1,
+   "gain": 0.38
+  },
+  {
+   "type": "voc",
+   "t": 15.7333,
+   "kind": "huh",
+   "dur": 0.32
+  },
+  {
+   "type": "tick",
+   "t": 16.9,
+   "mat": "wet",
+   "gain": 0.4
+  },
+  {
+   "type": "tick",
+   "t": 17.5333,
+   "mat": "soft",
+   "gain": 0.6
+  },
+  {
+   "type": "squeeze",
+   "t": 18.2,
+   "dur": 0.35,
+   "gain": 1.0
+  },
+  {
+   "type": "release",
+   "t": 18.5,
+   "gain": 0.8
+  },
+  {
+   "type": "voc",
+   "t": 18.9333,
+   "kind": "hehe",
+   "dur": 0.42
+  },
+  {
+   "type": "squeeze",
+   "t": 19.0,
+   "dur": 0.4,
+   "gain": 0.9
+  },
+  {
+   "type": "release",
+   "t": 19.3333,
+   "gain": 0.8
+  },
+  {
+   "type": "tear",
+   "t": 19.9,
+   "dur": 0.55
+  },
+  {
+   "type": "pop",
+   "t": 20.4667
+  },
+  {
+   "type": "pomf",
+   "t": 20.8667
+  },
+  {
+   "type": "voc",
+   "t": 21.0667,
+   "kind": "bliss",
+   "dur": 1.15
+  },
+  {
+   "type": "soft_chew",
+   "t": 21.1333,
+   "gain": 0.8
+  },
+  {
+   "type": "soft_chew",
+   "t": 21.4667,
+   "gain": 0.7
+  },
+  {
+   "type": "soft_chew",
+   "t": 21.8,
+   "gain": 0.6
+  },
+  {
+   "type": "soft_chew",
+   "t": 22.1333,
+   "gain": 0.5
+  },
+  {
+   "type": "tick",
+   "t": 22.7667,
+   "mat": "soft",
+   "gain": 0.5
+  },
+  {
+   "type": "tick",
+   "t": 23.5333,
+   "mat": "bowl",
+   "gain": 0.4
+  },
+  {
+   "type": "straw_bite",
+   "t": 24.4,
+   "gain": 1.0
+  },
+  {
+   "type": "drips",
+   "t": 24.6333,
+   "n": 3
+  },
+  {
+   "type": "juicy_chew",
+   "t": 24.7333,
+   "gain": 0.7
+  },
+  {
+   "type": "juicy_chew",
+   "t": 25.0,
+   "gain": 0.7
+  },
+  {
+   "type": "straw_bite",
+   "t": 25.3,
+   "gain": 0.8
+  },
+  {
+   "type": "juicy_chew",
+   "t": 25.6333,
+   "gain": 0.7
+  },
+  {
+   "type": "juicy_chew",
+   "t": 25.9333,
+   "gain": 0.7
+  },
+  {
+   "type": "tick",
+   "t": 25.9333,
+   "mat": "leaf",
+   "gain": 0.35
+  },
+  {
+   "type": "juicy_chew",
+   "t": 26.2333,
+   "gain": 0.7
+  },
+  {
+   "type": "pat",
+   "t": 26.3333
+  },
+  {
+   "type": "voc",
+   "t": 26.4667,
+   "kind": "yum",
+   "dur": 0.75
+  },
+  {
+   "type": "heart",
+   "t": 26.5
+  },
+  {
+   "type": "heart",
+   "t": 26.8
+  },
+  {
+   "type": "heart",
+   "t": 27.1
+  },
+  {
+   "type": "voc",
+   "t": 27.2667,
+   "kind": "giggle",
+   "dur": 0.5
+  },
+  {
+   "type": "heart",
+   "t": 27.4
+  },
+  {
+   "type": "twinkle",
+   "t": 28.1,
+   "gain": 0.4
+  },
+  {
+   "type": "voc",
+   "t": 28.2667,
+   "kind": "yay",
+   "dur": 0.55
+  }
+ ]
+}
