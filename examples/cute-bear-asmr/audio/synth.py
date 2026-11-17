@@ -753,7 +753,7 @@ def measure(x):
     return float(m["input_i"]), float(m["input_tp"])
 
 
-def limiter(x, ceiling_db=-1.6, look_ms=8.0):
+def limiter(x, ceiling_db=-2.4, look_ms=8.0):
     """transparent lookahead peak limiter: only the bite transients get touched."""
     from scipy.ndimage import minimum_filter1d, uniform_filter1d
 
@@ -768,17 +768,40 @@ def limiter(x, ceiling_db=-1.6, look_ms=8.0):
     return x * g, 20 * np.log10(g.min())
 
 
-def master(mix, path, target=-15.0):
-    """linear gain to target LUFS + lookahead limiter; no dynamic loudnorm pumping."""
+def aac_true_peak(x):
+    """true peak after the AAC encode the video will actually use."""
+    tmp = ROOT / "public" / "_tp.wav"
+    enc = ROOT / "public" / "_tp.m4a"
+    write_wav(tmp, x)
+    subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(tmp), "-c:a", "aac", "-b:a", "256k", str(enc)], check=True)
+    p = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(enc), "-af", "loudnorm=print_format=json", "-f", "null", "-"], capture_output=True, text=True)
+    tmp.unlink()
+    enc.unlink()
+    m = json.loads(p.stderr[p.stderr.rindex("{") : p.stderr.rindex("}") + 1])
+    return float(m["input_i"]), float(m["input_tp"])
+
+
+def master(mix, path, target=-15.0, tp_max=-1.3):
+    """linear gain to target LUFS + lookahead limiter (no dynamic loudnorm pumping).
+    The ceiling is lowered until the AAC-encoded result also stays under tp_max."""
+    # gentle top-end roll-off: keeps codec ringing on synthetic transients in check
+    sos = signal.butter(4, 16500, btype="low", fs=SR, output="sos")
+    mix = signal.sosfiltfilt(sos, mix, axis=1)
     x0 = mix / (np.max(np.abs(mix)) + 1e-9) * 0.5
     i0, _ = measure(x0)
     g = target - i0
-    for it in range(5):
-        y, gr = limiter(x0 * 10 ** (g / 20))
+    ceiling = -1.8
+    for it in range(8):
+        y, gr = limiter(x0 * 10 ** (g / 20), ceiling_db=ceiling)
         i1, tp = measure(y)
-        print(f"master pass {it}: gain {g:+.2f} dB -> {i1:.2f} LUFS, TP {tp:.2f} dBTP, max GR {gr:.1f} dB", file=sys.stderr)
-        if abs(i1 - target) < 0.1:
+        ia, tpa = aac_true_peak(y)
+        print(f"master pass {it}: gain {g:+.2f} dB ceiling {ceiling:.1f} -> {i1:.2f} LUFS, TP wav {tp:.2f} / aac {tpa:.2f} dBTP, max GR {gr:.1f} dB", file=sys.stderr)
+        ok_l = abs(i1 - target) < 0.15
+        ok_tp = tpa <= tp_max
+        if ok_l and ok_tp:
             break
+        if not ok_tp:
+            ceiling -= (tpa - tp_max) + 0.1
         g += target - i1
     write_wav(path, y)
 

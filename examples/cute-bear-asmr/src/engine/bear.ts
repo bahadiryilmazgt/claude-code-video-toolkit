@@ -265,10 +265,12 @@ class Eye {
     this.upper.scale.setScalar(wide);
     this.lower.scale.setScalar(wide);
     this.upper.visible = this.lower.visible = false;
+    // catchlights shrink and flatten with the eyelid so nothing floats mid-blink
+    const glintK = 1 - smooth(clamp(shut * 2.2));
     this.glints.forEach((g, i) => {
-      const s = g.userData.base * (1 + p.sparkle * (i === 0 ? 0.35 : 0.6));
-      g.scale.set(s, s * 0.85, s * 0.15);
-      g.visible = shut < 0.5;
+      const s = g.userData.base * (1 + p.sparkle * (i === 0 ? 0.35 : 0.6)) * glintK;
+      g.scale.set(s, s * 0.85 * (1 - 0.85 * smooth(shut)), s * 0.15);
+      g.visible = glintK > 0.02;
     });
     // lash line: follows the upper lid, morphs to ^ (happy) or > / < (squeeze)
     const N = 28;
