@@ -1,0 +1,10 @@
+import { createRequire } from 'node:module';
+import path from 'node:path';
+const require = createRequire(import.meta.url);
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+const page = await browser.newPage();
+await page.goto('file://' + path.resolve('harness/index.html'));
+await page.evaluate(() => window.bear.init(1080, 1920));
+for (const f of [300, 302, 304]) console.log(f, await page.evaluate((f) => window.bear.timing(f), f));
+await browser.close();

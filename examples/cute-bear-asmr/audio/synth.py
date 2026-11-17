@@ -768,7 +768,7 @@ def limiter(x, ceiling_db=-1.6, look_ms=8.0):
     return x * g, 20 * np.log10(g.min())
 
 
-def master(mix, path, target=-16.0):
+def master(mix, path, target=-15.0):
     """linear gain to target LUFS + lookahead limiter; no dynamic loudnorm pumping."""
     x0 = mix / (np.max(np.abs(mix)) + 1e-9) * 0.5
     i0, _ = measure(x0)

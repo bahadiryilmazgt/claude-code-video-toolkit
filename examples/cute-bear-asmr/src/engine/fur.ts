@@ -32,8 +32,19 @@ export interface FurPart {
 
 const NO_MASK = new THREE.Vector4(1e4, 1e4, 1e4, 0.0001);
 
+interface FurGlobals {
+  reverse?: boolean;
+  lambert?: boolean;
+  shellScale?: number;
+}
+// Default: Lambert shells + analytic ambient fill and golden tip sheen. Matches the
+// PBR-shell look closely at ~2.3x the speed under software GL.
+const FUR_DEFAULTS = { lambert: true, amb: 0.3, sheen: 0.24 };
+const FG = (): FurGlobals => ({ ...FUR_DEFAULTS, ...((globalThis as unknown as { FUR_OPTS?: FurGlobals }).FUR_OPTS ?? {}) });
+
 export function makeFurMaterial(o: FurOptions) {
-  const shells = o.shells ?? 20;
+  const g0 = FG();
+  const shells = Math.max(6, Math.round((o.shells ?? 20) * (g0.shellScale ?? 1)));
   const masks = (o.masks ?? []).slice(0, 4);
   while (masks.length < 4) masks.push(NO_MASK.clone());
   const uniforms: Record<string, THREE.IUniform> = {
@@ -49,13 +60,13 @@ export function makeFurMaterial(o: FurOptions) {
     uMask: { value: masks },
     uMaskMin: { value: o.maskMin ?? 0.25 },
     uWind: { value: new THREE.Vector3(0, 0, 0) },
+    // Lambert shells have no environment light: add an equivalent soft ambient fill
+    uEnvAmb: { value: g0.lambert || (g0 as { noenv?: boolean }).noenv ? (g0 as { amb?: number }).amb ?? 0.34 : 0 },
+    uSheen: { value: g0.lambert || (g0 as { noenv?: boolean }).noenv ? (g0 as { sheen?: number }).sheen ?? 0.08 : 0 },
   };
-  const m = new THREE.MeshStandardMaterial({
-    color: o.color,
-    roughness: 0.92,
-    metalness: 0,
-    alphaToCoverage: true,
-  });
+  const m: THREE.MeshStandardMaterial | THREE.MeshLambertMaterial = g0.lambert
+    ? new THREE.MeshLambertMaterial({ color: o.color, alphaToCoverage: true })
+    : new THREE.MeshStandardMaterial({ color: o.color, roughness: 0.92, metalness: 0, alphaToCoverage: true });
   m.onBeforeCompile = (s) => {
     Object.assign(s.uniforms, uniforms);
     s.vertexShader = s.vertexShader
@@ -69,7 +80,7 @@ export function makeFurMaterial(o: FurOptions) {
       .replace(
         '#include <begin_vertex>',
         `#include <begin_vertex>
-        float shell = float(gl_InstanceID + 1) / uShells;
+        float shell = (${g0.reverse ? 'uShells - float(gl_InstanceID)' : 'float(gl_InstanceID + 1)'}) / uShells;
         vShell = shell; vFurPos = furPos; vFurNrm = furNrm;
         float lenF = 1.0;
         for (int i = 0; i < 4; i++) {
@@ -95,7 +106,7 @@ export function makeFurMaterial(o: FurOptions) {
       .replace(
         '#include <common>',
         `#include <common>
-        uniform float uDensity, uRootDark, uRimAmt; uniform vec3 uTip, uRim;
+        uniform float uDensity, uRootDark, uRimAmt, uEnvAmb, uSheen; uniform vec3 uTip, uRim;
         varying vec3 vFurPos; varying vec3 vFurNrm; varying float vShell; varying float vLenF;
         vec3 hash33(vec3 p){ p = fract(p * vec3(.1031,.1030,.0973)); p += dot(p, p.yxz+33.33); return fract((p.xxy + p.yxx)*p.zyx); }`,
       )
@@ -126,11 +137,13 @@ export function makeFurMaterial(o: FurOptions) {
       )
       .replace(
         '#include <opaque_fragment>',
-        `outgoingLight += uRim * uRimAmt * pow(1.0 - clamp(dot(normal, normalize(vViewPosition)), 0.0, 1.0), 2.5) * vShell;
+        `outgoingLight += diffuseColor.rgb * uEnvAmb + vec3(1.0, 0.94, 0.82) * uSheen * pow(vShell, 0.8) * (0.6 + 0.4 * (1.0 - clamp(dot(normal, normalize(vViewPosition)), 0.0, 1.0)));
+        outgoingLight += uRim * uRimAmt * pow(1.0 - clamp(dot(normal, normalize(vViewPosition)), 0.0, 1.0), 2.5) * vShell;
         #include <opaque_fragment>`,
       );
   };
-  m.customProgramCacheKey = () => 'fur-v1';
+  m.customProgramCacheKey = () => `fur-v2-${g0.reverse ? 1 : 0}`;
+  m.userData.isFur = true;
   return { material: m, uniforms, shells };
 }
 

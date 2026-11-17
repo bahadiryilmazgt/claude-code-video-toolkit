@@ -102,6 +102,23 @@ export class Engine {
       sp.sparkles.push({ t: ts, p, r: what === 'head' ? 0.3 : 0.09, n });
     }
     this.particles = new Particles(this.scene, sp);
+    // Fur shells skip the (costly) environment lookups; everything glossy keeps them.
+    if ((globalThis as unknown as { FUR_OPTS?: { noenv?: boolean } }).FUR_OPTS?.noenv) {
+      const env = this.scene.environment;
+      const k = this.scene.environmentIntensity;
+      this.scene.traverse((o) => {
+        const mats = (o as THREE.Mesh).material;
+        if (!mats) return;
+        for (const m of Array.isArray(mats) ? mats : [mats]) {
+          const sm = m as THREE.MeshStandardMaterial;
+          if (sm.isMeshStandardMaterial && !sm.userData.isFur && !sm.envMap) {
+            sm.envMap = env;
+            sm.envMapIntensity = k;
+          }
+        }
+      });
+      this.scene.environment = null;
+    }
     this.post = new Post(r, w, h);
   }
 

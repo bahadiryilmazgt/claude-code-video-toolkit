@@ -29,17 +29,28 @@ cookie loses its tip.
 
 ```bash
 python3 timeline.py                                                    # timing source of truth
-uv run --no-project --with numpy --with scipy python audio/synth.py    # -> public/asmr_mix.wav
+uv run --no-project --with numpy --with scipy python audio/synth.py    # -> public/asmr_mix.wav (-15 LUFS, -1.5 dBTP)
 npm install
-npm run studio                                                         # preview
-npx remotion render BearASMR out/bear-asmr.mp4 --concurrency=2 --timeout=300000 --crf=16 --audio-bitrate=256k
+npm run studio                                                         # interactive preview in Remotion Studio
 ```
 
-`BearASMRDraft` is a 540x960 composition for quick motion checks. `stills.mjs <frames...>`
-renders key frames with one browser.
+Final render (1080x1920, 30 fps, H.264 + AAC):
 
-Rendering uses SwiftShader (no GPU needed): about 3 s per 1080x1920 frame, so roughly
-an hour for the full film on 4 CPU cores.
+```bash
+npx esbuild harness/entry.ts --bundle --format=iife --outfile=harness/bundle.js
+node harness/render.mjs 0 900 2      # frames -> out/frames/*.jpg (resumable: existing frames are skipped)
+./harness/encode.sh                  # -> out/cute-bear-asmr.mp4
+```
+
+The harness drives the same `Engine` as the Remotion composition. It reads each frame
+straight off the WebGL canvas instead of taking a page screenshot. With no GPU (software
+SwiftShader), that is about 5 s per frame on 4 CPU cores, so roughly 80 minutes for the
+whole film. `npx remotion render BearASMR` works too but is slower here. `BearASMRDraft` is
+a 540x960 composition for motion checks, and `stills.mjs <frames...>` renders key frames.
+
+Fur shells use Lambert lighting plus an analytic ambient fill and a golden tip sheen. On a
+software renderer this looks almost identical to PBR shells at about 2.3x the speed. Set
+`globalThis.FUR_OPTS = { lambert: false }` before the engine is built to get full PBR fur.
 
 ## Honest limitations
 

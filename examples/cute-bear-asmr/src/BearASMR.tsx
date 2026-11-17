@@ -2,7 +2,8 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Audio, continueRender, delayRender, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { Engine } from './engine/engine';
 
-export const BearASMR: React.FC<{ debug?: number; profile?: number; noshadow?: number }> = ({ debug, profile, noshadow }) => {
+export const BearASMR: React.FC<{ debug?: number; profile?: number; noshadow?: number; trace?: number }> = ({ debug, profile, noshadow, trace }) => {
+  (globalThis as unknown as { BEAR_TRACE?: number }).BEAR_TRACE = trace ?? 0;
   (globalThis as unknown as { FUR_NOSHADOW?: number }).FUR_NOSHADOW = noshadow ?? 0;
   (globalThis as unknown as { BEAR_DEBUG?: number }).BEAR_DEBUG = debug ?? 0;
   (globalThis as unknown as { BEAR_PROFILE?: number }).BEAR_PROFILE = profile ?? 0;
@@ -20,7 +21,9 @@ export const BearASMR: React.FC<{ debug?: number; profile?: number; noshadow?: n
   useLayoutEffect(() => {
     if (!engine.current) return;
     const h = delayRender(`frame ${frame}`);
+    const ts = performance.now();
     engine.current.render(frame);
+    if ((globalThis as unknown as { BEAR_TRACE?: number }).BEAR_TRACE) console.log(`TRACE f${frame} start ${ts.toFixed(0)} js ${(performance.now() - ts).toFixed(0)}`);
     if ((globalThis as unknown as { BEAR_PROFILE?: number }).BEAR_PROFILE) {
       const gl = engine.current.renderer.getContext();
       const px = new Uint8Array(4);

@@ -557,7 +557,7 @@ export function handsAndFoods(t: number, bear: Bear): Scene3 {
     quat: cookieUp(0.06 * Math.sin(TAU * 1.2 * (tt - 6.2)), 0.2),
   });
   const cookieHold = (tt: number): Xf => ({
-    pos: mouthIn.clone().add(v(0, -0.085, 0.11)),
+    pos: mouthIn.clone().add(v(0, -0.062, 0.125)),
     quat: cookieUp(cookieRoll(tt), 0.22),
   });
   const preBite = (k: number) => (tt: number): Xf => {
@@ -812,7 +812,7 @@ export const SHOTS: Shot[] = [
   shot('head', 1.5, { t: 15.45, p: [0.03, 0.79, 1.3], l: [0.02, 0.54, -0.25] }, { t: 16.25, p: [0.0, 0.74, 1.08], l: [0.0, 0.6, -0.28] }, { t: 17.0, p: [0.0, 0.74, 1.05], l: [0.0, 0.6, -0.28] }),
   shot('head', 1.0, { t: 17.0, p: [-0.05, MSP[1], 1.82], l: [-0.03, MSL[1], -0.15] }, { t: 18.05, p: [-0.05, 0.96, 1.72], l: [-0.03, MSL[1], -0.15] }),
   // marshmallow texture close-up
-  shot('marsh', 1.6, { t: 18.05, p: [0.03, 0.64, 0.95], l: [0.0, 0.5, -0.04] }, { t: 19.75, p: [0.02, 0.63, 0.84], l: [0.0, 0.5, -0.04] }),
+  shot('marsh', 1.6, { t: 18.05, p: [0.03, 0.6, 0.95], l: [0.0, 0.46, -0.02] }, { t: 19.75, p: [0.02, 0.59, 0.84], l: [0.0, 0.46, -0.02] }),
   shot('mouth', 1.4, { t: 19.75, p: [-0.07, 0.8, 1.42], l: [-0.04, 0.52, -0.25] }, { t: 22.3, p: [-0.04, 0.79, 1.3], l: [-0.03, 0.53, -0.25] }),
   shot('head', 1.0, { t: 22.3, p: [0.07, MSP[1], 1.82], l: [0.04, MSL[1], -0.15] }, { t: 24.0, p: [0.08, 0.96, 1.72], l: [0.05, MSL[1], -0.15] }),
   // strawberry close-up, easing back as the hearts float up
